@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TextRank Summarization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        h1 {
+            font-size: 24px;
+        }
+        p {
+            font-size: 18px;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        button {
+            font-size: 16px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        // Helper function to calculate cosine similarity
+        function cosineSimilarity(vecA, vecB) {
+            let dotProduct = 0.0;
+            let normA = 0.0;
+            let normB = 0.0;
+            for (let i = 0; i < vecA.length; i++) {
+                dotProduct += vecA[i] * vecB[i];
+                normA += vecA[i] * vecA[i];
+                normB += vecB[i] * vecB[i];
+            }
+            return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+        }
+
+        // Function to tokenize text into sentences
+        function tokenizeSentences(text) {
+            return text.match(/[^.!?]+[.!?]*/g);
+        }
+
+        // Function to vectorize sentences
+        function vectorizeSentence(sentence, wordIndex) {
+            const words = sentence.split(/\W+/);
+            const vector = Array(wordIndex.size).fill(0);
+            for (const word of words) {
+                if (wordIndex.has(word)) {
+                    vector[wordIndex.get(word)] += 1;
+                }
+            }
+            return vector;
+        }
+
+        // TextRank algorithm
+        function textRank(text) {
+            const sentences = tokenizeSentences(text);
+            const wordIndex = new Map();
+            let index = 0;
+
+            // Build word index
+            for (const sentence of sentences) {
+                for (const word of sentence.split(/\W+/)) {
+                    if (!wordIndex.has(word)) {
+                        wordIndex.set(word, index++);
+                    }
+                }
+            }
+
+            // Vectorize sentences
+            const vectors = sentences.map(sentence => vectorizeSentence(sentence, wordIndex));
+
+            // Compute similarity matrix
+            const similarityMatrix = Array(sentences.length).fill(null).map(() => Array(sentences.length).fill(0));
+            for (let i = 0; i < sentences.length; i++) {
+                for (let j = i + 1; j < sentences.length; j++) {
+                    const similarity = cosineSimilarity(vectors[i], vectors[j]);
+                    similarityMatrix[i][j] = similarity;
+                    similarityMatrix[j][i] = similarity;
+                }
+            }
+
+            // PageRank algorithm
+            const d = 0.85;
+            const epsilon = 1e-4;
+            let ranks = Array(sentences.length).fill(1.0 / sentences.length);
+            let delta;
+
+            do {
+                const newRanks = Array(sentences.length).fill(1.0 - d);
+                delta = 0;
+                for (let i = 0; i < sentences.length; i++) {
+                    for (let j = 0; j < sentences.length; j++) {
+                        if (i !== j) {
+                            newRanks[i] += d * similarityMatrix[j][i] * ranks[j];
+                        }
+                    }
+                }
+                for (let i = 0; i < sentences.length; i++) {
+                    delta += Math.abs(newRanks[i] - ranks[i]);
+                    ranks[i] = newRanks[i];
+                }
+            } while (delta > epsilon);
+
+            // Select top sentences
+            const rankedSentences = sentences.map((sentence, i) => ({ sentence, rank: ranks[i] }));
+            rankedSentences.sort((a, b) => b.rank - a.rank);
+
+            // Return summary (top 3 sentences)
+            return rankedSentences.slice(0, 3).map(item => item.sentence).join(' ');
+        }
+
+        // Function to summarize text from user input
+        function summarizeText() {
+            const text = document.getElementById('user-input').value;
+            const summary = textRank(text);
+            document.getElementById('summary').innerText = summary;
+        }
+    </script>
+</head>
+<body>
+    <h1>TextRank Summarization</h1>
+    <p>Enter text to summarize:</p>
+    <textarea id="user-input">Your text here. Add more sentences to see how the summarizer works.</textarea>
+    <br>
+    <button onclick="summarizeText()">Summarize</button>
+    <p>Summary:</p>
+    <pre id="summary"></pre>
+</body>
+</html>

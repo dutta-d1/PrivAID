@@ -1,0 +1,9 @@
+{
+  "name": "online.privaid.chromeextension",
+  "description": "Native messaging host for PrivAid chrome extension",
+  "path": "C:\\Users\\dipan\\Developer\\privaid-chrome-extension\\run_native_bridge.bat",
+  "type": "stdio",
+  "allowed_origins": [
+    "chrome-extension://alcjjcefkgelpdgpmkdaafhknammnalo/"
+  ]
+}

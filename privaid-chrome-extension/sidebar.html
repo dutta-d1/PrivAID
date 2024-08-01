@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrivAid Sidebar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .tabs {
+            display: flex;
+            background-color: #e0e0e0;
+            border-bottom: 1px solid #ccc;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #e0e0e0;
+            border: none;
+            outline: none;
+            transition: background-color 0.3s;
+        }
+        .tab.active {
+            background-color: #f0f0f0;
+            border-bottom: 2px solid #4CAF50;
+        }
+        .tab-content {
+            display: none;
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .tab-content.active {
+            display: flex;
+            flex-direction: column;
+        }
+        #chatbox, #composebox {
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 10px;
+        }
+        .message-container {
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+        .message {
+            padding: 10px;
+            border-radius: 15px;
+            max-width: 80%;
+            word-wrap: break-word;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .user-message {
+            background-color: #8dcabb;
+            align-self: flex-end;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+        .bot-message {
+            background-color: #c9ee83;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+            border: 1px solid #e0e0e0;
+        }
+        .input-area {
+            display: flex;
+            padding: 10px;
+            background-color: #fff;
+            border-top: 1px solid #e0e0e0;
+        }
+        .input-area input[type="text"] {
+            flex-grow: 1;
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            outline: none;
+        }
+        .input-area button, #summarize, .compose-buttons button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .input-area button:hover, #summarize:hover, .compose-buttons button:hover {
+            background-color: #45a049;
+        }
+        #composeTextArea {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 10px;
+            resize: vertical;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+        }
+        .compose-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        #summarize {
+            margin-top: 10px;
+            align-self: flex-start;
+        }
+        .error-message {
+            background-color: #ffcccb;
+            color: #d8000c;
+            border: 1px solid #d8000c;
+        }
+        .info-message {
+            background-color: #bde5f8;
+            color: #00529b;
+            border: 1px solid #00529b;
+        }
+    </style>
+</head>
+<body>
+    <div class="tabs">
+        <button class="tab active" data-tab="chat">Chat</button>
+        <button class="tab" data-tab="compose">Compose</button>
+    </div>
+
+    <div id="chatTab" class="tab-content active">
+        <div id="chatbox"></div>
+        <div class="input-area">
+            <input type="text" id="chatInput" placeholder="Type your message...">
+            <button id="chatSubmit">Send</button>
+        </div>
+        <button id="summarize">Summarize Page</button>
+    </div>
+
+    <div id="composeTab" class="tab-content">
+        <textarea id="composeTextArea" placeholder="Generated text will appear here..."></textarea>
+        <div class="compose-buttons">
+            <button id="copyCompose">Copy</button>
+            <button id="insertCompose">Insert</button>
+        </div>
+        <div class="input-area">
+            <input type="text" id="composeInput" placeholder="Type your message...">
+            <button id="composeSubmit">Send</button>
+        </div>
+    </div>
+
+    <script src="sidebar.js"></script>
+</body>
+</html>

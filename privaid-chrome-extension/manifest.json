@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "PrivAid",
+  "version": "1.0",
+  "description": "An AI extension that works with AMD Ryzen AI",
+  "permissions": ["nativeMessaging", "sidePanel", "activeTab"],
+  "action": {
+    "default_title": "Open PrivAid Sidebar"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "side_panel": {
+    "default_path": "sidebar.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["textrank.js", "content.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["textrank.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
