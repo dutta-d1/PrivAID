@@ -135,6 +135,8 @@ def send_error(error_message):
     send_message({"type": "error", "text": error_message})
 
 def send_response(response_message, is_last):
+    if not is_last:
+        response_message += " "
     send_message({"type": "response", "text": response_message, "isLast": is_last})
 
 def read_message():
