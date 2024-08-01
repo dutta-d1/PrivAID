@@ -99,7 +99,7 @@ def generate(input_text):
         stop_event.clear()
         streamer = TextIteratorStreamer(model.tokenizer)
         
-        thread = threading.Thread(target=llm_eval.gradio, kwargs=dict(
+        thread = threading.Thread(target=llm_eval.streaming_decode_prompt, kwargs=dict(
             model=model,
             tokenizer=model.tokenizer,
             prompt=input_text,
